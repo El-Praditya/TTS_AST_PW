@@ -1,7 +1,6 @@
 <?php
 require 'koneksi.php';
 
-// Mode edit
 $edit = null;
 if (isset($_GET['edit'])) {
     $stmt = $pdo->prepare("SELECT * FROM ponsel WHERE id=?");
@@ -9,7 +8,6 @@ if (isset($_GET['edit'])) {
     $edit = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-// READ
 $data = $pdo->query("SELECT * FROM ponsel ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -17,7 +15,7 @@ $data = $pdo->query("SELECT * FROM ponsel ORDER BY id DESC")->fetchAll(PDO::FETC
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Website Saya</title>
+  <title>Rental Ponsel</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -32,6 +30,11 @@ $data = $pdo->query("SELECT * FROM ponsel ORDER BY id DESC")->fetchAll(PDO::FETC
     <h1 id="title">Rental Ponsel</h1>
 
     <section id="subtitle">
+      <p class="desc">
+        Kami menyediakan Android dan IOS mulai dari generasi lama hingga generasi terbaru.
+      </p>
+      <br><br><br><br>
+
       <?php if (isset($_GET['msg'])): ?>
         <div class="alert ok"><?= htmlspecialchars($_GET['msg']) ?></div>
       <?php endif; ?>
@@ -39,7 +42,7 @@ $data = $pdo->query("SELECT * FROM ponsel ORDER BY id DESC")->fetchAll(PDO::FETC
         <div class="alert err"><?= htmlspecialchars($_GET['error']) ?></div>
       <?php endif; ?>
 
-      <!-- FORM CREATE/UPDATE -->
+      <!-- FORM -->
       <form method="POST" action="crud.php" class="card">
         <input type="hidden" name="action" value="<?= $edit ? 'update' : 'create' ?>">
         <?php if ($edit): ?>
@@ -64,10 +67,10 @@ $data = $pdo->query("SELECT * FROM ponsel ORDER BY id DESC")->fetchAll(PDO::FETC
         <?php endif; ?>
       </form>
 
-      <!-- TABEL DATA -->
+      <!-- TABEL -->
       <table class="table">
         <thead>
-          <tr><th>ID</th><th>Merk</th><th>Model</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr>
+          <tr><th>Stok</th><th>Merk</th><th>Model</th><th>Harga</th><th>Aksi</th></tr>
         </thead>
         <tbody>
           <?php if (empty($data)): ?>
