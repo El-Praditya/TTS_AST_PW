@@ -1,8 +1,8 @@
 
 <?php
 $host = "localhost";
-$port = 9898;
-$dbname = "rentalPonsel_db";
+$port = 3306;
+$dbname = "rentalponsel_db";
 $username = "root";
 $password = "";
 
