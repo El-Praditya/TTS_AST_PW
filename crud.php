@@ -6,21 +6,35 @@ $action = $_POST['action'] ?? '';
 
 // ===== CREATE =====
 if ($action === 'create') {
-    $nama  = trim($_POST['nama_hp'] ?? '');
-    $merek = trim($_POST['merek'] ?? '');
-    $harga = (float)($_POST['harga_sewa'] ?? 0);
-    $stok  = (int)($_POST['stok'] ?? 0);
+    $merk  = trim($_POST['merk'] ?? '');
+    $model = trim($_POST['model'] ?? '');
+    $harga = filter_var(
+        $_POST['harga_sewa'] ?? null,
+        FILTER_VALIDATE_INT
+    );
+    $stok = filter_var(
+        $_POST['stok'] ?? null,
+        FILTER_VALIDATE_INT
+    );
 
-    if ($nama === '' || $merek === '' || $harga <= 0 || $stok < 0) {
+    if (
+        $merk === '' ||
+        $model === '' ||
+        strlen($merk) > 50 ||
+        strlen($model) > 50 ||
+        $harga === false || $harga === null || $harga <= 0 ||
+        $stok === false || $stok === null || $stok < 0
+    ) {
         header('Location: index.php?error=' . urlencode('Data tidak valid'));
         exit;
     }
 
     $stmt = $pdo->prepare(
-        "INSERT INTO hp (nama_hp, merek, harga_sewa, stok)
+        "INSERT INTO ponsel (merk, model, harga_sewa, stok)
          VALUES (?, ?, ?, ?)"
     );
-    $stmt->execute([$nama, $merek, $harga, $stok]);
+
+    $stmt->execute([$merk, $model, $harga, $stok]);
 
     header('Location: index.php?msg=' . urlencode('Data berhasil ditambahkan'));
     exit;
@@ -28,23 +42,38 @@ if ($action === 'create') {
 
 // ===== UPDATE =====
 if ($action === 'update') {
-    $id    = (int)($_POST['id_hp'] ?? 0);
-    $nama  = trim($_POST['nama_hp'] ?? '');
-    $merek = trim($_POST['merek'] ?? '');
-    $harga = (float)($_POST['harga_sewa'] ?? 0);
-    $stok  = (int)($_POST['stok'] ?? 0);
+    $id    = (int)($_POST['id'] ?? 0);
+    $merk  = trim($_POST['merk'] ?? '');
+    $model = trim($_POST['model'] ?? '');
+    $harga = filter_var(
+        $_POST['harga_sewa'] ?? null,
+        FILTER_VALIDATE_INT
+    );
+    $stok = filter_var(
+        $_POST['stok'] ?? null,
+        FILTER_VALIDATE_INT
+    );
 
-    if ($id <= 0 || $nama === '' || $merek === '' || $harga <= 0 || $stok < 0) {
+    if (
+        $id <= 0 ||
+        $merk === '' ||
+        $model === '' ||
+        strlen($merk) > 50 ||
+        strlen($model) > 50 ||
+        $harga === false || $harga === null || $harga <= 0 ||
+        $stok === false || $stok === null || $stok < 0
+    ) {
         header('Location: index.php?error=' . urlencode('Data tidak valid'));
         exit;
     }
 
     $stmt = $pdo->prepare(
-        "UPDATE hp
-         SET nama_hp = ?, merek = ?, harga_sewa = ?, stok = ?
-         WHERE id_hp = ?"
+        "UPDATE ponsel
+         SET merk = ?, model = ?, harga_sewa = ?, stok = ?
+         WHERE id = ?"
     );
-    $stmt->execute([$nama, $merek, $harga, $stok, $id]);
+
+    $stmt->execute([$merk, $model, $harga, $stok, $id]);
 
     header('Location: index.php?msg=' . urlencode('Data berhasil diupdate'));
     exit;
@@ -52,10 +81,13 @@ if ($action === 'update') {
 
 // ===== DELETE =====
 if ($action === 'delete') {
-    $id = (int)($_POST['id_hp'] ?? 0);
+    $id = (int)($_POST['id'] ?? 0);
 
     if ($id > 0) {
-        $stmt = $pdo->prepare("DELETE FROM hp WHERE id_hp = ?");
+        $stmt = $pdo->prepare(
+            "DELETE FROM ponsel WHERE id = ?"
+        );
+
         $stmt->execute([$id]);
     }
 
